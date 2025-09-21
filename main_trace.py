@@ -14,7 +14,7 @@ from utils.models import TRACE, TRACETS, TraceStyleEmbeddings
 from utils.engine import train_one_epoch, evaluate, evaluate_challenge
 from utils.losses import FocalLoss
 from utils import misc
-from utils.sampler import CustomSampler
+from utils.sampler import CustomSampler, ThreeToOneEpochSampler
 from utils.config import setup
 from fvcore.nn import FlopCountAnalysis, flop_count_table
 from typing import List, Tuple
@@ -64,59 +64,6 @@ def split_pos_neg_indices_patient_level(dataset):
         (pos_idx if is_pos else neg_idx).append(i)
     return pos_idx, neg_idx
 
-
-class ThreeToOneEpochSampler(Sampler[int]):
-    def __init__(
-        self,
-        pos_indices: list[int],
-        neg_indices: list[int],
-        neg_multiplier: int = 2,
-        target_pos_count: int | None = None, 
-        generator: torch.Generator | None = None,
-        verbose: bool = True, 
-    ):
-        self.pos_indices = list(pos_indices)
-        self.neg_indices = list(neg_indices)
-        self.neg_multiplier = int(neg_multiplier)
-        self.target_pos_count = target_pos_count or len(self.pos_indices)
-        self.generator = generator
-        self.verbose = verbose
-
-        if len(self.pos_indices) == 0:
-            raise ValueError("ThreeToOneEpochSampler: No positive patients found.")
-        if self.neg_multiplier < 1:
-            raise ValueError("ThreeToOneEpochSampler: neg_multiplier must be >= 1.")
-
-        self.last_counts: tuple[int,int] | None = None
-    def __iter__(self):
-        P = min(self.target_pos_count, len(self.pos_indices))
-        chosen_pos = random.sample(self.pos_indices, P)
-
-        N_target = min(self.neg_multiplier * P, len(self.neg_indices))
-        chosen_neg = random.sample(self.neg_indices, N_target)
-
-        self.last_counts = (len(chosen_pos), len(chosen_neg))
-        if self.verbose:
-            P_, N_ = self.last_counts
-            ratio = (N_ / P_) if P_ > 0 else float('inf')
-            print(f"[sampler] epoch sample counts: positives={P_}  negatives={N_}  (~{ratio:.2f}:1)")
-
-        epoch_indices = chosen_pos + chosen_neg
-        if self.generator is not None:
-            order = torch.randperm(len(epoch_indices), generator=self.generator).tolist()
-        else:
-            order = torch.randperm(len(epoch_indices)).tolist()
-        for k in order:
-            yield epoch_indices[k]
-
-    def __len__(self):
-        P = min(self.target_pos_count, len(self.pos_indices))
-        N = min(self.neg_multiplier * P, len(self.neg_indices))
-        return P + N
-
-    # optional: expose counts safely
-    def get_last_counts(self) -> tuple[int,int] | None:
-        return self.last_counts
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Attention based melanoma/osc risk estimation on clinical data', add_help=True)

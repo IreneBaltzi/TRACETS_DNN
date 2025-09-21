@@ -1,6 +1,6 @@
 data:
   dataset_name: "sepsis"
-  data_dir: /sepsis/Dataset_preprocessed.csv
+  data_dir: ./Dataset/Dataset_preprocessed.csv
   metadata_dir: ./sepsis_metadata.json
   num_labels: 1
   target_label: "SepsisLabel"
