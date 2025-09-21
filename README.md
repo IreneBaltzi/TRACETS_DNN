@@ -4,7 +4,7 @@ Deep Neural Networks course project. We adapt TRACE-style embeddings to clinical
 
 `Note` This codebase is adapted from TRACE (original repo and paper cited below). The project reorganizes TRACE components for time-series modeling and adds **TRACETS**. Some upstream files may remain for compatibility. The sections below point only to the parts you need to run this project.
 
-### 🚀 How to Run
+## 🚀 How to Run
 
 All experiments are launched from the same entry point: 
 
@@ -48,7 +48,7 @@ docker run --gpus all --rm -it \
 ```
 
 
-### 📁 Repo Structure
+## 📁 Repo Structure
 ```
 .
 ├─ .devcontainer/            # VS Code Devcontainer setup (optional)
@@ -79,7 +79,7 @@ docker run --gpus all --rm -it \
 └─ README.md                 # project documentation
 ```
 
-### 📊 Dataset 
+## 📊 Dataset 
 - Source: PhysioNet/CinC 2019 Sepsis Challenge (hourly ICU time series).
 - Split: 90/10 patient-level stratified split. The 10% “validation” is used as a held-out test set (the official challenge test set is hidden).
 - Features: defined in ```sepsis_metadata.json```.
@@ -98,3 +98,8 @@ docker run --gpus all --rm -it \
 
 _Ablations varying hidden size, heads, normalization, pos-weight, and learning rate are included in the report.  
 The best config used `hidden=64`, `heads=2`, `mlp_ratio=2`, `pos_weight=15`, and `lr=1e-5`._
+
+## Reference
+
+This project is adapted from [TRACE: Transformer-Based Risk Assessment for Clinical Evaluation](https://doi.org/10.1109/ACCESS.2025.3577973),  
+D. Christopoulos, S. Spanos, V. Ntouskos and K. Karantzalos, *IEEE Access*, 2025.
