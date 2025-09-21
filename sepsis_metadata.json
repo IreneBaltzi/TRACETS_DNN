@@ -1,0 +1,16 @@
+{
+  "continuous": [
+    "Age",
+    "HR", "O2Sat", "Temp", "SBP", "MAP", "DBP", "Resp", "EtCO2",
+    "BaseExcess", "HCO3", "FiO2", "pH", "PaCO2", "SaO2",
+    "AST", "BUN", "Alkalinephos", "Calcium", "Chloride", "Creatinine",
+    "Bilirubin_direct", "Glucose", "Lactate", "Magnesium", "Phosphate",
+    "Potassium", "Bilirubin_total", "TroponinI", "Hct", "Hgb",
+    "PTT", "WBC", "Fibrinogen", "Platelets", "HospAdmTime"
+  ],
+  "categorical": {
+    "Gender": 2,
+    "Unit1": 2,
+    "Unit2": 2
+  }
+}

@@ -1,0 +1,70 @@
+data:
+  dataset_name: "sepsis"
+  data_dir: /sepsis/Dataset_preprocessed.csv
+  metadata_dir: ./sepsis_metadata.json
+  num_labels: 1
+  target_label: "SepsisLabel"
+  encoding: false
+
+ar_sched:
+  enable: true
+  p_max: 0.30
+  warmup_epochs: 5
+  
+train:
+  train_perc: 0.9
+  train_batch_size: 128
+  val_batch_size: 128
+  seed: 1
+  use_time_weighted_loss: true
+  time_decay_lambda: 0.02   
+  time_pos_boost: 3.0       
+  time_weight_direction: "early"   # used late only for ablations
+  time_weight_normalize: true       
+  
+sampler: ""
+
+optim:
+  epochs: 30
+  lr: 0.00001
+  lr_scheduler: "rop"
+  optimizer: "rmsprop"
+  loss: "bce"          # 
+  bce:
+    use_pos_weight: true
+    pos_weight: 15  #13.3 default   
+  focal:
+    alpha: 0.8         
+
+model:
+  hidden_size: 64
+  tran_layers: 1
+  heads: 2
+  mlp_ratio: 2
+  num_mode: "mlp"
+  dropout: 0.0
+  cls_token: false
+  use_num_norm: false
+  use_cat_norm: false
+  checkbox_mode: "sum"
+  max_T: 1024                # for PE
+  positional_encoding: "sin" 
+
+baselines:
+  enable: false         
+  window: 12          
+  run_lr: true         
+  run_xgb: true       
+  run_lgbm: true       
+  threshold: 0.5       
+  out_dir: "./results/experiment_name/baselines"  
+
+  # horizon: 0            
+  # tune_threshold: true   
+  # val_fraction: 0.1      
+  # seed: 1
+
+  
+threshold: 0.4
+metrics: "challenge"
+

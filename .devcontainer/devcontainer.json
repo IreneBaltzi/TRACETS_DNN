@@ -1,0 +1,39 @@
+{
+  "name": "tracets",
+  "image": "tracets",                  // <-- your dev image (deps only, no COPY .)
+  "runArgs": [
+    "--gpus", "all"
+  ],
+  "mounts": [
+    // Mount dataset into a short, stable path inside the container
+    "source=/mnt/research/data/clinical_images/sepsis,target=/sepsis,type=bind"
+  ],
+
+  "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind",
+  "workspaceFolder": "/app",
+
+  // If your image already installed requirements, you can omit this.
+  // Otherwise uncomment to install on first create:
+  // "postCreateCommand": "pip install -r requirements.txt",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.analysis.extraPaths": ["./"],
+        "terminal.integrated.cwd": "/app",
+        "jupyter.notebookFileRoot": "/app"
+      }
+    }
+  },
+
+  // Important: if your Dockerfile had an ENTRYPOINT, Dev Containers will override it.
+  // If you *must* keep an ENTRYPOINT, add:  "overrideCommand": true
+  "overrideCommand": true
+}
